@@ -7,6 +7,7 @@ const app = express()
 app.use(cors())
 let serverList = {};
 let roomId = 0;
+
 const Port = process.env.PORT || 5000;
 const server = app.listen(Port, console.log("server run in port : " + Port))
 
@@ -54,4 +55,14 @@ io.on("connection", (socket) => {
         socket.to(roomId).emit("game_started")
     })
 
+    socket.on("game_over", (data) => {
+        const { roomId } = data
+        console.log("🚀 ~ roomId:", roomId)
+        console.log("play_agin")
+        socket.to(roomId).emit("playAgin", roomId)
+    })
+    socket.on("btnSet", (data) => {
+        const { roomId, btnNo, btnVal } = data
+        socket.to(roomId).emit("PressBtn", { btnNo, btnVal });
+    })
 })

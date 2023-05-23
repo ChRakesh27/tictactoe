@@ -6,8 +6,8 @@ import io from 'socket.io-client';
 export const socket = io.connect("http://localhost:5000/")
 function App() {
   const [username, setUsername] = useState('');
-  const [roomId, setRoomId] = useState('');
   const [isJoined, setIsJoined] = useState(false)
+  const [roomId, setRoomId] = useState('');
   const [isHost, setIsHost] = useState(false)
   const [startBtn, setStartBtn] = useState(false)
   const [isGameOn, setIsGameOn] = useState(false);
@@ -79,7 +79,7 @@ function App() {
             }
             {
               isGameOn && (<>
-                <Game></Game>
+                <Game roomId={roomId} isHost={isHost} exitRoom={exitRoom} ></Game>
               </>)
 
             }
@@ -94,5 +94,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
