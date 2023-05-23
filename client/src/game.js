@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import './game.css'
 import { socket } from "./App";
 
-const obj = { "1": '-', "2": '-', "3": '-', "4": '-', "5": '-', "6": '-', "7": '-', "8": '-', "9": '-' }
+const obj = { "1": 'X', "2": 'X', "3": '-', "4": '-', "5": '-', "6": '-', "7": '-', "8": '-', "9": '-' }
 const arr = Object.keys(obj)
 function Game(props) {
     let [btnList, setBtnListState] = useState(obj)
@@ -18,8 +18,7 @@ function Game(props) {
         } else {
             setBtnValState("O")
         }
-        socket.on("playAgin", (data) => {
-            console.log("game over", data)
+        socket.on("checkGame", (data) => {
             setMessageState("You loss the game")
             setIsGameOver(true)
             overlayElement.current.style.display = "block"
@@ -29,7 +28,17 @@ function Game(props) {
             setBtnListState((oldbtnList) => ({ ...oldbtnList, [btnNo]: btnVal }))
             overlayElement.current.style.display = "none"
         })
+
+        socket.on("check_play_agin", () => {
+            setMessageState("opponent want to play agin")
+        })
+
     }, [props.isHost])
+
+    useEffect(() => {
+        console.log("---->", overlayElement.current, overlayElement)
+    }, [overlayElement])
+
 
     useEffect(() => {
         if (btnVal !== '-') {
@@ -70,6 +79,8 @@ function Game(props) {
         setBtnListState(obj);
         setIsGameOver(false);
         setMessageState("Wait for opponent player")
+        overlayElement.current.style.display = "none";
+        socket.emit("play_agin", { roomId: props.roomId })
     }
 
     return <>
@@ -79,7 +90,7 @@ function Game(props) {
                 {
                     isGameOver && (<>
                         <button onClick={reset}>- Play Agin -</button>
-                        <button onClick={props.exitRoom}>- Exit -</button>
+                        {/* <button onClick={props.exitRoom}>- Exit -</button> */}
                     </>)
                 }
             </div>

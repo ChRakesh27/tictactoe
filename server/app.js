@@ -58,11 +58,14 @@ io.on("connection", (socket) => {
     socket.on("game_over", (data) => {
         const { roomId } = data
         console.log("🚀 ~ roomId:", roomId)
-        console.log("play_agin")
-        socket.to(roomId).emit("playAgin", roomId)
+        socket.to(roomId).emit("checkGame", roomId)
     })
     socket.on("btnSet", (data) => {
         const { roomId, btnNo, btnVal } = data
         socket.to(roomId).emit("PressBtn", { btnNo, btnVal });
+    })
+    socket.on("play_agin", (data) => {
+        const { roomId } = data
+        socket.to(roomId).emit("check_play_agin");
     })
 })
