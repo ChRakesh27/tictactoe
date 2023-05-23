@@ -9,24 +9,24 @@ function Game(props) {
     let [btnVal, setBtnValState] = useState('-')
     let [isGameOver, setIsGameOver] = useState(false)
     let [message, setMessageState] = useState('Wait for opponent player')
-    const overlayElement = useRef(null)
+    const [overlayElement, setOverlayElement] = useState('none')
 
     useEffect(() => {
         if (props.isHost) {
             setBtnValState("X")
-            overlayElement.current.style.display = "none"
+            setOverlayElement("none")
         } else {
             setBtnValState("O")
         }
         socket.on("checkGame", (data) => {
             setMessageState("You loss the game")
             setIsGameOver(true)
-            overlayElement.current.style.display = "block"
+            setOverlayElement("block")
         })
         socket.on("PressBtn", (data) => {
             const { btnNo, btnVal } = data;
             setBtnListState((oldbtnList) => ({ ...oldbtnList, [btnNo]: btnVal }))
-            overlayElement.current.style.display = "none"
+            setOverlayElement("none")
         })
 
         socket.on("check_play_agin", () => {
@@ -52,12 +52,12 @@ function Game(props) {
                 (btnList["3"] === btnVal && btnList["3"] === btnList["5"] && btnList["7"] === btnList["3"])) {
                 setIsGameOver(true)
                 setMessageState("You Won the game")
-                overlayElement.current.style.display = "block";
+                setOverlayElement("block");
                 socket.emit("game_over", { roomId: props.roomId })
             } else if (!Object.values(btnList).some(o => o === '-')) {
                 setIsGameOver(true)
                 setMessageState("game draw")
-                overlayElement.current.style.display = "block"
+                setOverlayElement("block")
             }
 
         }
@@ -69,7 +69,7 @@ function Game(props) {
         const btnNo = event.target.id;
         setBtnListState((oldbtnList) => ({ ...oldbtnList, [btnNo]: btnVal }))
         socket.emit("btnSet", { roomId: props.roomId, btnNo, btnVal });
-        overlayElement.current.style.display = "block";
+        setOverlayElement("block");
     }
 
     function isDisableBtn(btnNo) {
@@ -79,18 +79,18 @@ function Game(props) {
         setBtnListState(obj);
         setIsGameOver(false);
         setMessageState("Wait for opponent player")
-        overlayElement.current.style.display = "none";
+        setOverlayElement("none");
         socket.emit("play_agin", { roomId: props.roomId })
     }
 
     return <>
-        <div className="overlay" ref={overlayElement}>
+        <div className="overlay" style={{ display: overlayElement }}>
             <div className="d-flex">
                 <h1>{message}</h1>
                 {
                     isGameOver && (<>
                         <button onClick={reset}>- Play Agin -</button>
-                        {/* <button onClick={props.exitRoom}>- Exit -</button> */}
+                        <button onClick={props.exitRoom}>- Exit -</button>
                     </>)
                 }
             </div>
