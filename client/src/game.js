@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import './game.css'
 import { socket } from "./App";
 
-const obj = { "1": 'X', "2": 'X', "3": '-', "4": '-', "5": '-', "6": '-', "7": '-', "8": '-', "9": '-' }
+const obj = { "1": '-', "2": '-', "3": '-', "4": '-', "5": '-', "6": '-', "7": '-', "8": '-', "9": '-' }
 const arr = Object.keys(obj)
 function Game(props) {
     let [btnList, setBtnListState] = useState(obj)
@@ -18,6 +18,7 @@ function Game(props) {
         } else {
             setBtnValState("O")
         }
+
         socket.on("checkGame", (data) => {
             setMessageState("You loss the game")
             setIsGameOver(true)
@@ -29,9 +30,15 @@ function Game(props) {
             setOverlayElement("none")
         })
 
-        socket.on("check_play_agin", () => {
-            setMessageState("opponent want to play agin")
-        })
+        // socket.on("check_play_agin", () => {
+        //     if (message === "Wait for Host Reply") {
+        //         setMessageState("Wait for opponent player")
+        //     }
+        //     else {
+        //         setMessageState("opponent want to play agin")
+        //     }
+
+        // })
 
     }, [props.isHost])
 
@@ -69,19 +76,34 @@ function Game(props) {
         const btnNo = event.target.id;
         setBtnListState((oldbtnList) => ({ ...oldbtnList, [btnNo]: btnVal }))
         socket.emit("btnSet", { roomId: props.roomId, btnNo, btnVal });
+        setMessageState("Wait for opponent player")
         setOverlayElement("block");
     }
 
     function isDisableBtn(btnNo) {
         return btnList[btnNo] !== "-"
     };
-    function reset() {
-        setBtnListState(obj);
-        setIsGameOver(false);
-        setMessageState("Wait for opponent player")
-        setOverlayElement("none");
-        socket.emit("play_agin", { roomId: props.roomId })
-    }
+    // function reset() {
+    //     setBtnListState(obj);
+    //     if (props.isHost) {
+    //         if (message === "opponent want to play agin") {
+    //             setOverlayElement('none')
+    //         } else {
+    //             setMessageState("Wait for Opponent Reply")
+
+    //         }
+    //     } else {
+    //         if (message === "opponent want to play agin") {
+    //             setMessageState("Wait for opponent player")
+
+    //         } else {
+    //             setMessageState("Wait for Host Reply")
+    //         }
+    //     }
+    //     setIsGameOver(false)
+    //     socket.emit("play_agin", { roomId: props.roomId, isHost: props.isHost })
+
+    // }
 
     return <>
         <div className="overlay" style={{ display: overlayElement }}>
@@ -89,7 +111,7 @@ function Game(props) {
                 <h1>{message}</h1>
                 {
                     isGameOver && (<>
-                        <button onClick={reset}>- Play Agin -</button>
+                        {/* <button onClick={reset}>- Play Agin -</button> */}
                         <button onClick={props.exitRoom}>- Exit -</button>
                     </>)
                 }

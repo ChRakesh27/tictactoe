@@ -64,8 +64,13 @@ io.on("connection", (socket) => {
         const { roomId, btnNo, btnVal } = data
         socket.to(roomId).emit("PressBtn", { btnNo, btnVal });
     })
-    socket.on("play_agin", (data) => {
-        const { roomId } = data
-        socket.to(roomId).emit("check_play_agin");
-    })
+    // socket.on("play_agin", (data) => {
+    //     const { roomId, isHost } = data
+    //     // if(isHost){
+
+    //     // }
+    //     socket.to(roomId).emit("check_play_agin");
+    // })
+
+
 })
