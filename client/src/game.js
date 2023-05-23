@@ -21,7 +21,7 @@ function Game(props) {
         socket.on("playAgin", (data) => {
             console.log("game over", data)
             setMessageState("You loss the game")
-            setMessageState("You Won the game")
+            setIsGameOver(true)
             overlayElement.current.style.display = "block"
         })
         socket.on("PressBtn", (data) => {
