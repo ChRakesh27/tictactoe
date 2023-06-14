@@ -3,8 +3,8 @@ import Game from './game';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-export const socket = io.connect("http://localhost:5000/")
-// export const socket = io.connect("https://tictacteo.onrender.com")
+// export const socket = io.connect("http://localhost:5000/")
+export const socket = io.connect("https://tictacteo.onrender.com")
 function App() {
   const [username, setUsername] = useState('');
   const [isJoined, setIsJoined] = useState(false)
