@@ -14,7 +14,7 @@ const server = app.listen(Port, console.log("server run in port : " + Port))
 const io = require("socket.io")(server, {
     cors: {
         // origin: "http://localhost:3000",
-        origin: "https://6489a29d369f11135760aeef--cheerful-entremet-50616d.netlify.app/",
+        origin: "https://6489a29d369f11135760aeef--cheerful-entremet-50616d.netlify.app"
     }
 })
 
